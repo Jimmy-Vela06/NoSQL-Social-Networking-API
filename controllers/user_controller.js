@@ -13,14 +13,14 @@ module.exports = {
       .populate("thoughts")
       .then((user) =>
         !user
-          ? res.status(404).json("NO USER FOUND WITHTHAT ID")
+          ? res.status(404).json({ message: "NO USER WITH THIS ID😖" })
           : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
   createUser(req, res) {
     User.create(req.body)
-      .then((dbUserData) => res.json(dbUserData))
+      .then((userData) => res.json(userData))
       .catch((err) => res.status(500).json(err));
   },
   deleteUser(req, res) {
@@ -43,6 +43,32 @@ module.exports = {
         !user
           ? res.status(404).json({ message: "NO USER WITH THIS ID😖" })
           : res.status(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  addFriend(req, res) {
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendID } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "FRIEND NOT FOUND WITH THIS ID" })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
+  },
+  deleteFriend(req, res) {
+    User.findByIdAndRemove(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendID } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: "AMIGO NOT FOUND WITH THIS ID" })
+          : res.json(user)
       )
       .catch((err) => res.status(500).json(err));
   },
