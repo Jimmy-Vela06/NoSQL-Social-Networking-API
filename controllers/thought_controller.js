@@ -1,8 +1,7 @@
-const { json } = require("express");
 const { Thought, User } = require("../models");
 
 module.exports = {
-  getAllThought(req, res) {
+  getAllThoughts(req, res) {
     Thought.find()
       .then((thoughtsData) => res.json(thoughtsData))
       .catch((err) => res.status(500).json(err));
