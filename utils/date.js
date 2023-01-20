@@ -1,28 +1,29 @@
-//TIMESTAMP FORMAT
+const addDateSuffix = (date) => {
+  let dateStr = date.toString();
 
-// creates suffix for day of the month, ex: 1"st" 23"rd"
-const date_Suffix = (date) => {
-  let day = date.toString();
+  // get last char of date string
+  const lastChar = dateStr.charAt(dateStr.length - 1);
 
-  const lastChar = day.charAt(dateStr.length - 1);
-
-  if (day === "1" && day !== "11") {
-    day = `${day}st`;
-  } else if (lastChar === "2" && day !== "12") {
-    day = `${day}nd`;
-  } else if (lastChar === "3" && day !== "13") {
-    day = `${day}rd`;
+  if (lastChar === "1" && dateStr !== "11") {
+    dateStr = `${dateStr}st`;
+  } else if (lastChar === "2" && dateStr !== "12") {
+    dateStr = `${dateStr}nd`;
+  } else if (lastChar === "3" && dateStr !== "13") {
+    dateStr = `${dateStr}rd`;
   } else {
-    day = `${day}th`;
+    dateStr = `${dateStr}th`;
   }
-  return day;
+
+  return dateStr;
 };
 
+// function to format a timestamp, accepts the timestamp and an `options` object as parameters
 module.exports = (
   timestamp,
   { monthLength = "short", dateSuffix = true } = {}
 ) => {
-  const month = {
+  // create month object
+  const months = {
     0: monthLength === "short" ? "Jan" : "January",
     1: monthLength === "short" ? "Feb" : "February",
     2: monthLength === "short" ? "Mar" : "March",
@@ -37,31 +38,30 @@ module.exports = (
     11: monthLength === "short" ? "Dec" : "December",
   };
 
-  const dateObject = new Date(timestamp);
+  const dateObj = new Date(timestamp);
+  const formattedMonth = months[dateObj.getMonth()];
 
-  const monthStamp = month[dateObject.getMonth()];
+  const dayOfMonth = dateSuffix
+    ? addDateSuffix(dateObj.getDate())
+    : dateObj.getDate();
 
-  const dayStamp = dateSuffix
-    ? date_Suffix(dateObject.getDate())
-    : dateObject.getDate();
-
-  const year = dateObject.getFullYear();
-
+  const year = dateObj.getFullYear();
   let hour =
-    dateObject.getHours() > 12
-      ? Math.floor(dateObject.getHours() - 12)
-      : dateObject.getHours();
+    dateObj.getHours() > 12
+      ? Math.floor(dateObj.getHours() - 12)
+      : dateObj.getHours();
 
+  // if hour is 0 (12:00am), change it to 12
   if (hour === 0) {
     hour = 12;
   }
 
-  const minutes =
-    (dateObject.getMinutes() < 10 ? "0" : " ") + dateObject.getMinutes();
+  const minutes = (dateObj.getMinutes() < 10 ? "0" : "") + dateObj.getMinutes();
 
-  const am_pm = dateObject.getHours() >= 12 ? "pm" : "am";
+  // set `am` or `pm`
+  const periodOfDay = dateObj.getHours() >= 12 ? "pm" : "am";
 
-  const formattedTimeStamp = `${monthStamp} ${dayStamp}, ${year} at ${hour}:${minutes} ${am_pm}`;
+  const formattedTimeStamp = `${formattedMonth} ${dayOfMonth}, ${year} at ${hour}:${minutes} ${periodOfDay}`;
 
   return formattedTimeStamp;
 };

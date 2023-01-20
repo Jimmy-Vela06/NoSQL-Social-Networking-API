@@ -49,7 +49,7 @@ module.exports = {
   addFriend(req, res) {
     User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: req.params.friendID } },
+      { $addToSet: { friends: req.params.friendId } },
       { runValidators: true, new: true }
     )
       .then((user) =>
@@ -59,10 +59,11 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
+
   deleteFriend(req, res) {
-    User.findByIdAndRemove(
+    User.findOneAndUpdate(
       { _id: req.params.userId },
-      { $addToSet: { friends: req.params.friendID } },
+      { $pull: { friends: { friends: req.params.friendId } } },
       { runValidators: true, new: true }
     )
       .then((user) =>
@@ -70,6 +71,10 @@ module.exports = {
           ? res.status(404).json({ message: "AMIGO NOT FOUND WITH THIS ID" })
           : res.json(user)
       )
-      .catch((err) => res.status(500).json(err));
+
+      .catch((err) => {
+        console.log(err);
+        res.status(500).json(err);
+      });
   },
 };
