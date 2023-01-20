@@ -23,7 +23,6 @@ module.exports = {
   },
 
   createThought(req, res) {
-    // create a thought post
     Thought.create(req.body)
       .then((thought) => {
         return User.findOneAndUpdate(

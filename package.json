@@ -1,14 +1,12 @@
 {
-  "name": "The-Social",
+  "name": "the-social",
   "version": "1.0.1",
-  "description": "Mongoose back-end project - Develop",
+  "description": "NoSQL social media app backend",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start": "node index",
-    "dev": "nodemon index",
-    "seed": "node utils/seed",
-    "heroku-postbuild": "node utils/seed.js"
+    "dev": "nodemon index"
   },
   "dependencies": {
     "express": "^4.17.1",
